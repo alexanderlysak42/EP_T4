@@ -1,0 +1,23 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+
+# PHP
+vendor/
+composer.lock
+
+# MODX build artifacts
+_build/packages/
+_packages/
+*.transport.zip
+
+# Logs
+*.log
+
+# Local env
+.env
+.env.local

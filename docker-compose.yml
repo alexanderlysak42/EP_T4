@@ -1,0 +1,54 @@
+services:
+  db:
+    image: mariadb:10.11
+    container_name: ep_t4_modx_db
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: modx
+      MARIADB_USER: modx
+      MARIADB_PASSWORD: modx_password
+      MARIADB_ROOT_PASSWORD: root_password
+    volumes:
+      - modx_db_data:/var/lib/mysql
+    networks:
+      - modx_net
+
+  modx:
+    build:
+      context: ./docker/modx
+      args:
+        MODX_VERSION: "3.1.2-pl"
+    container_name: ep_t4_modx_app
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    volumes:
+      - modx_app_data:/var/www/html
+      - ./CustomForm/core/components/customform:/var/www/html/core/components/customform
+      - ./CustomForm/assets/components/customform:/var/www/html/assets/components/customform
+    networks:
+      - modx_net
+
+  adminer:
+    image: adminer:latest
+    container_name: ep_t4_modx_adminer
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8081:8080"
+    networks:
+      - modx_net
+
+networks:
+  modx_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.211.1.0/24
+
+volumes:
+  modx_db_data:
+  modx_app_data:
